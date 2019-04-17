@@ -1,0 +1,7 @@
+feed-aggregator:
+  poller-config:
+    rate: 10s
+    max-messages-per-poll: 10
+  sources:
+    - "https://www.sciencedaily.com/rss/top/science.xml"
+    - "http://feeds.reuters.com/reuters/technologyNews"

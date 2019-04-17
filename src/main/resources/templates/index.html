@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Feed entries</title>
+</head>
+<body>
+<form action="#" data-th-action="@{/}" data-th-object="${filter}" method="post">
+    Filter by title: <input type="search" data-th-field="*{title}"/>
+    <input type="submit" value="Apply"/>
+</form>
+<div data-th-unless="${#lists.isEmpty(entries)}">
+    <table>
+        <tbody>
+        <tr data-th-each="entry : ${entries}">
+            <td data-th-text="${entry.publishedDate}"></td>
+            <td><a target="_blank" data-th-href="${entry.uri}" data-th-text="${entry.title}"/></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div data-th-if="${#lists.isEmpty(entries)}">
+    No entries found
+</div>
+</body>
+</html>
