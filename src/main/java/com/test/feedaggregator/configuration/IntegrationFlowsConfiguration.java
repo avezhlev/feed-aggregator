@@ -18,6 +18,7 @@ import org.springframework.integration.jpa.support.PersistMode;
 import org.springframework.integration.metadata.MetadataStore;
 import org.springframework.integration.metadata.SimpleMetadataStore;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
@@ -29,14 +30,16 @@ import java.net.URL;
 public class IntegrationFlowsConfiguration {
 
     private final IntegrationFlowContext integrationFlowContext;
+    private final TransactionTemplate transactionTemplate;
     private final EntityManagerFactory entityManagerFactory;
     private final FeedAggregatorConfigurationProperties configuration;
 
     @Autowired
     public IntegrationFlowsConfiguration(IntegrationFlowContext integrationFlowContext,
-                                         EntityManagerFactory entityManagerFactory,
+                                         TransactionTemplate transactionTemplate, EntityManagerFactory entityManagerFactory,
                                          FeedAggregatorConfigurationProperties configuration) {
         this.integrationFlowContext = integrationFlowContext;
+        this.transactionTemplate = transactionTemplate;
         this.entityManagerFactory = entityManagerFactory;
         this.configuration = configuration;
     }
@@ -66,7 +69,7 @@ public class IntegrationFlowsConfiguration {
                 .handle(Jpa.outboundAdapter(entityManagerFactory)
                                 .entityClass(FeedEntry.class)
                                 .persistMode(PersistMode.PERSIST),
-                        e -> e.transactional())
+                        e -> e.transactional(transactionTemplate.getTransactionManager()))
                 .get();
     }
 
